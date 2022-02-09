@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JTI TEST | LOGIN</title>
-</head>
-<body>
-    awawawaw
-</body>
-</html>
+<div class="text-center mb-3">
+    <h3>Login First</h3>
+</div>
+
+<% if (error) { %>
+    <div class="alert alert-danger">
+        <%= error %> 
+    </div>
+<% } %> 
+
+<div class="d-grid gap-2">
+    <button class='btn btn-lg btn-outline-danger btn-block' id="btn-signin" onclick="signIn()">
+        <i class="fab fa-google"></i> SignIn With Google
+    </button>
+    <button class='btn btn-lg btn-outline-danger btn-block d-none' id="btn-loader" disabled>
+        <i class="fas fa-spinner fa-pulse"></i> SignIn With Google
+    </button>
+</div>

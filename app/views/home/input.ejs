@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-header text-center bg-info text-white">
+        <h4>Data No Handphone</h4>
+    </div>
+    <div class="card-body">
+        <form action="">
+            <div class="mb-3">
+                <label for="phone" class="form-label fw-bold">Phone Number</label>
+                <input type="number" class="form-control" id="phone" placeholder="Your phone number">
+            </div>
+            <div class="mb-3">
+                <label for="provider" class="form-label fw-bold">Provider</label>
+                <select class="form-select" id="provider" aria-label="Default select example">
+                    <option selected>Choose Provider</option>
+                    <% provider.forEach(element => { %>
+                        <option value="<%= element %> ">
+                            <%= element %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="float-end">
+                <button class="btn btn-sm btn-success">SAVE</button>
+                <button class="btn btn-sm btn-outline-danger">AUTO</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <a href="/">Back</a>
+</div>
