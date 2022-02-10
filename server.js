@@ -1,17 +1,38 @@
 const express = require('express');
+const app = express();
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const passport = require('passport');
 const cors = require('cors');
 const bodyparser = require("body-parser");
 
+// SOCKET IO PREPARING
+const server = require('http').createServer(app);
+const io = require("socket.io")(server, {});
+
+// SOCKET IO
+let userOnline = 1;
+io.on('connection', socket => {
+    socket.on('join', param => {
+        userOnline++;
+        io.emit('userOnline', userOnline)
+    })
+    socket.on('message', param => {
+        io.emit('message', param)
+    })
+    socket.on('disconnect', param => {
+        userOnline--;
+        io.emit('userOnline', userOnline)
+    })
+})
+
 // REQUIRE OAUTH2
 require('./app/middleware/ouath2');
 
+// ENV
 require('dotenv').config();
 
-const app = express();
-
+// PORT
 const PORT = process.env.PORT || 8080;
 
 // STATIC FILES
@@ -69,6 +90,6 @@ app.use('/', homePage)
 app.use('/login', authPage)
 app.use('/api', apis)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server running on port ${process.env.URI}`+ PORT)
 });

@@ -10,20 +10,47 @@
                   <th class="text-center">Genap</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody>          
                 <tr>
-                  <th class="text-center">#</th>
-                  <th class="text-center">First</th>
+                    <td class="text-center" id="output_ganjil">
+                        <% data.filter(output => output.is_even == 0).forEach(output => { %> 
+                            <% const phoneGenerate = cryptoGenerate.decrypt(output.phone) %> 
+                            <% const providerGenerate = cryptoGenerate.decrypt(output.provider) %> 
+                            <div class="d-grid">
+                                <button class="btn btn-sm btn-secondary mb-2 btn-card-phone-list" id="<%= output.id %>" onclick="`${selectedCard('<%= output.id %>', '<%= phoneGenerate %>')}`">
+                                    <%= phoneGenerate %>  
+                                    <span class="d-block">
+                                        <%= providerGenerate %>
+                                    </span>
+                                </button>             
+                            </div>  
+                        <% }) %>
+                    </td>
+                    <td class="text-center" id="output_genap">
+                        <% data.filter(output => output.is_even == 1).forEach(output => { %>   
+                            <% const phoneGenerate = cryptoGenerate.decrypt(output.phone) %> 
+                            <% const providerGenerate = cryptoGenerate.decrypt(output.provider) %>  
+                            <div class="d-grid">
+                                <button class="btn btn-sm btn-secondary mb-2 btn-card-phone-list" id="<%= output.id %>" onclick="`${selectedCard('<%= output.id %>','<%= phoneGenerate %>')}`">
+                                    <%= phoneGenerate %>
+                                    <span class="d-block">
+                                        <%= providerGenerate %>
+                                    </span>
+                                </button>          
+                            </div> 
+                        <% }) %>
+                    </td>
                 </tr>
             </tbody>
         </table>
 
         <div class="float-end">
-            <button class="btn btn-sm btn-primary">EDIT</button>
-            <button class="btn btn-sm btn-outline-danger">DELETE</button>
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalEdit">EDIT</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deletePhone()">DELETE</button>
         </div>
     </div>
 </div>
+<small>Note: Select list to update or delete.</small>
 
 <div class="text-center mt-3">
     <a href="/">Back</a>

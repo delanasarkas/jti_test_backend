@@ -5,3 +5,8 @@
 .clickable:hover {
     opacity: 0.7;
 }
+
+.active-list {
+    background-color: rgb(189, 21, 21) !important;
+    box-shadow: none;
+}

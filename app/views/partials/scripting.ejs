@@ -9,3 +9,52 @@
     <!-- CUSTOM JS -->
     <script src="/js/auth.js"></script>
     <script src="/js/home.js"></script>
+    <!-- SOCKET IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+
+        socket.emit('join')
+        socket.on("message", (param) => {
+
+            // INPUT MESSAGE
+            if(param.is_even == 1) {
+                var element = $('#output_genap');
+
+                element.on("click", function () {
+                    selectedCard(param.id, param.phone)
+                });
+                
+                element.append(`
+                <div class="d-grid">
+                    <button class="btn btn-sm btn-secondary mb-2 btn-card-phone-list" id="${param.id}">
+                        ${param.phone}
+                        <span class="d-block">
+                            ${param.provider}
+                        </span>
+                    </button>          
+                </div>
+                `)
+            } else {
+                var element = $('#output_ganjil');
+
+                element.on("click", function () {
+                    selectedCard(param.id, param.phone)
+                });
+
+                element.append(`
+                <div class="d-grid">
+                    <button class="btn btn-sm btn-secondary mb-2 btn-card-phone-list" id="${param.id}" onclick="${selectedCard(param.id, param.phone)}">
+                        ${param.phone}
+                        <span class="d-block">
+                            ${param.provider}
+                        </span>
+                    </button>          
+                </div>
+                `)
+            }
+        })
+        socket.on('userOnline', (userOnline) => {
+            $('#onlineUser').text(`Online user ${userOnline}`);
+        })
+    </script>

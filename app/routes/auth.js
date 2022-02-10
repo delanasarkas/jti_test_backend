@@ -4,9 +4,11 @@ const passport = require('passport');
 
 app.get('/', function (req, res, next) {
     // DECLARE DATA
+
     const data = {
         title: 'LOGIN',
-        error: ''
+        error: '',
+        provider: [],
     }
 
     // RESPONSE

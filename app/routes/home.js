@@ -2,6 +2,7 @@ const express = require('express');
 let app = express.Router();
 const passport = require('passport');
 const db = require("../models");
+const crypto = require('../middleware/crypto');
 const Data = db.data;
 
 app.get('/', function (req, res, next) {
@@ -14,6 +15,7 @@ app.get('/', function (req, res, next) {
             title: 'HOME',
             error: '',
             user: userSignIn,
+            provider: [],
         }
     
         // RESPONSE
@@ -57,13 +59,22 @@ app.get('/output', function (req, res, next) {
         // GET ALL DATA
         Data.findAll()
         .then((data) => {
-            console.log(data)
             // DECLARE DATA
+            const provider = [
+                'XL',
+                'TELKOMSEL',
+                'THREE',
+                'INDOSAT',
+                'SMARTFREN',
+            ]
+
             const dataArr = {
                 title: 'OUTPUT',
                 data: data,
+                cryptoGenerate: crypto,
+                provider: provider,
             }
-            // console.log(dataArr)
+
             // RESPONSE
             res.render('home/output', dataArr);
         })

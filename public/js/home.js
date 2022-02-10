@@ -1,6 +1,10 @@
 // GOTO PAGE WITH TYPE
 const goTo = (page) => {
     window.location.href = `/${page}`
+
+    if(page == 'output'){
+        localStorage.removeItem('jti_test_selected');
+    }
 }
 
 // GENERATE AUTO PROVIDER
@@ -149,14 +153,18 @@ const inputSubmitAuto = () => {
         '0884'
     );
 
+    // LOGIC RANDOMIZE PHONE NUMBER
     const randomize = Math.floor(Math.random() * allPrefix.length);
     const randomNumber = Math.floor((Math.random() * 90000000) + 500);
-
     const result = allPrefix[randomize]+randomNumber;
     
+    // ADD VALUE TO FIELD PHONE
     $("input[name=phone]").val(result);
 
+    // GENERATE PROVIDER
     generateProvider(null, allPrefix[randomize]);
+
+    // GET VALUE
     let userVal = $("input[name=user]").val();
     let providerVal = $("#provider").find(":selected").text();
     let lastVal = result.substr(result.length - 1);
@@ -168,10 +176,10 @@ const inputSubmitAuto = () => {
     // CONDITION CHECK IF DATA EXIST
     axios.get(API_URL+ `/api/find-data?phone=${result}`)
     .then((res) => {
-        const result = res.data.data;
+        const resDataFind = res.data.data;
 
-        if(result.length == 0) {
-            inputSubmitAuto(result, providerVal, lastVal, userVal, button, buttonLoader);
+        if(resDataFind.length == 0) {
+            processInputSubmitAuto(result, providerVal, lastVal, userVal, button, buttonLoader);
         } else {
             $('#alert_input_error').removeClass( "d-none" ).append('Phone number is exist!');
 
@@ -181,7 +189,7 @@ const inputSubmitAuto = () => {
         }
     })
     .catch(() => {
-        concole.clear();
+        console.clear();
     })
 }
 
@@ -197,8 +205,21 @@ const processInputSubmitAuto = (result, providerVal, lastVal, userVal, button, b
     .then((res) => {
         // SUCCESS
         const successMessage = res.data.meta.message;
+        const idResponse = res.data.data.id;
 
         setTimeout(() => {    
+            // WEB SOCKET MESSAGE
+            socket.emit('message', {
+                id: idResponse,
+                phone: result,
+                provider: providerVal,
+                is_even: (parseInt(lastVal) % 2 == 0) ? 1 : 0,
+            })
+
+            // SOUND
+            var sound = new Audio("/sound/beep.mp3");
+            sound.play();
+
             // ADD MESSAGE 
             $('#alert_input_error').addClass( "d-none" );
             $('#alert_input_success').removeClass( "d-none" ).append(successMessage);
@@ -298,4 +319,54 @@ const processInputSubmit = (phoneVal, providerVal, lastVal, userVal, button, but
         button.removeClass( "d-none" );
         buttonLoader.addClass( "d-none" );
     })
+}
+
+// ============ OUTPUT =============
+// SELECTED PHONE LIST
+const selectedCard = (id, phone) => {
+    // get class
+    const list = document.querySelectorAll('.btn-card-phone-list');
+    const listSelected = $(`#${id}`)
+
+    // loop
+    for (i = 0; i < list.length; i++) {
+        // Remove the class 'active' if it exists
+        list[i].classList.remove('active-list')
+    }
+    // add 'active' classs to the element that was clicked
+    listSelected.addClass('active-list');
+
+    // store data
+    localStorage.setItem('jti_test_selected', id);
+    $("input[name=phone_edit]").val(phone);
+}
+
+const submitEdit = () => {
+    const id = localStorage.getItem('jti_test_selected');
+    const phone = $("input[name=phone_edit]").val();
+
+    axios.put(API_URL+ `/api/update/${id}`, {
+        phone_edit: phone,
+    })
+    .then((res) => {
+        const code = res.data.meta.code;
+        const message = res.data.meta.message;
+
+        if(code == 200) {
+            $('#updated_alert').removeClass( "d-none" ).append(message);
+        } else {
+            $('#updated_alert_fail').removeClass( "d-none" ).append(message);
+        }
+    })
+}
+
+const deletePhone = () => {
+    if (confirm('Are you sure delete phone number?')) {
+        const id = localStorage.getItem('jti_test_selected');
+
+        axios.delete(API_URL+ `/api/delete/${id}`)
+        .then(() => {
+            window.location.href = '/output';
+        })
+    }
 }

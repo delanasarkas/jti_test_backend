@@ -1,0 +1,23 @@
+<!-- MODAL EDIT -->
+<div class="modal fade" id="modalEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditLabel">Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success d-none" id="updated_alert"></div>
+                <div class="alert alert-success d-none" id="updated_alert_fail"></div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label fw-bold">Phone Number</label>
+                    <input type="number" class="form-control" id="phone_edit" name="phone_edit" placeholder="08xxxx" oninput="generateProvider(event)">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-secondary" href="/output">Close</a>
+                <button type="button" class="btn btn-primary" onclick="submitEdit()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
