@@ -1,6 +1,8 @@
 const express = require('express');
 let app = express.Router();
 const passport = require('passport');
+const db = require("../models");
+const Data = db.data;
 
 app.get('/', function (req, res, next) {
     // CONDITION IF NOT LOGGEDIN
@@ -22,32 +24,52 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/input', function (req, res, next) {
-    // DECLARE DATA
-    const provider = [
-        'XL',
-        'TELKOMSEL',
-        'THREE',
-        'INDOSAT',
-        'SMARTFREN',
-    ]
+    // DECLARE USER
+    const userSignIn = req.user;
 
-    const data = {
-        title: 'INPUT',
-        provider:  provider,
+    if(userSignIn){
+        const provider = [
+            'XL',
+            'TELKOMSEL',
+            'THREE',
+            'INDOSAT',
+            'SMARTFREN',
+        ]
+    
+        const data = {
+            title: 'INPUT',
+            provider:  provider,
+            user: userSignIn,
+        }
+    
+        // RESPONSE
+        res.render('home/input', data);
+    } else {
+        res.redirect('/login');
     }
-
-    // RESPONSE
-    res.render('home/input', data);
 });
 
 app.get('/output', function (req, res, next) {
-    // DECLARE DATA
-    const data = {
-        title: 'OUTPUT',
-    }
+    // DECLARE USER
+    const userSignIn = req.user;
 
-    // RESPONSE
-    res.render('home/output', data);
+    if(userSignIn){
+        // GET ALL DATA
+        Data.findAll()
+        .then((data) => {
+            console.log(data)
+            // DECLARE DATA
+            const dataArr = {
+                title: 'OUTPUT',
+                data: data,
+            }
+            // console.log(dataArr)
+            // RESPONSE
+            res.render('home/output', dataArr);
+        })
+    } else {
+        res.redirect('/login');
+    }
 });
 
 module.exports = app
